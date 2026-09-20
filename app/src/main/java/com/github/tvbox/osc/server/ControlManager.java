@@ -18,7 +18,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 public class ControlManager {
     private static ControlManager instance;
     private RemoteServer mServer = null;
-    public static Context mContext;
+    private Context mContext;
 
     private ControlManager() {
 
@@ -36,7 +36,10 @@ public class ControlManager {
     }
 
     public static void init(Context context) {
-        mContext = context;
+        if (instance == null) {
+            instance = new ControlManager();
+        }
+        instance.mContext = context.getApplicationContext();
     }
 
     public String getAddress(boolean local) {
@@ -49,7 +52,7 @@ public class ControlManager {
         return local ? mServer.getLoadAddress() : mServer.getServerAddress();
     }
 
-    public void startServer() {
+    public synchronized void startServer() {
         if (mServer != null && mServer.isStarting()) {
             return;
         }
@@ -86,7 +89,7 @@ public class ControlManager {
             });
             try {
                 mServer.start();
-                com.github.catvod.Proxy.set(RemoteServer.serverPort);
+                com.github.catvod.CatvodProxy.set(RemoteServer.serverPort);
                 IjkMediaPlayer.setDotPort(Hawk.get(HawkConfig.DOH_URL, 0) > 0, RemoteServer.serverPort);
                 break;
             } catch (IOException ex) {

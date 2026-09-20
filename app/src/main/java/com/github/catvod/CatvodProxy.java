@@ -2,12 +2,12 @@ package com.github.catvod;
 
 import com.github.tvbox.osc.server.RemoteServer;
 
-public class Proxy {
+public class CatvodProxy {
 
     private static int port = RemoteServer.serverPort;
 
     public static void set(int port) {
-        Proxy.port = port;
+        CatvodProxy.port = port;
     }
 
     public static int getPort() {

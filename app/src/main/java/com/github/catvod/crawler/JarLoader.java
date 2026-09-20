@@ -425,7 +425,7 @@ public class JarLoader {
     }
 
     private void injectProxyPort(DexClassLoader loader) {
-        com.github.catvod.Proxy.set(getServerPort());
+        com.github.catvod.CatvodProxy.set(getServerPort());
         if (loader == null) return;
         try {
             Class<?> proxy = loader.loadClass("com.github.catvod.Proxy");

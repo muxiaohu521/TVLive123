@@ -1,6 +1,7 @@
 package com.github.tvbox.osc.ui.dialog;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class RemoteDialog extends BaseDialog {
     private ImageView ivQRCode;
     private TextView tvAddress;
+    private TextView tvCloseRemote;
 
     public RemoteDialog(@NonNull @NotNull Context context) {
         super(context, R.style.CustomDialogStyleDim);
@@ -22,7 +24,20 @@ public class RemoteDialog extends BaseDialog {
         setCanceledOnTouchOutside(false);
         ivQRCode = findViewById(R.id.ivQRCode);
         tvAddress = findViewById(R.id.tvAddress);
+        tvCloseRemote = findViewById(R.id.tvCloseRemote);
+        tvCloseRemote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         refreshQRCode();
+    }
+
+    @Override
+    public void dismiss() {
+        ControlManager.get().stopServer();
+        super.dismiss();
     }
 
     private void refreshQRCode() {

@@ -3,7 +3,7 @@ package com.github.catvod.crawler.js;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 
-import com.github.catvod.Proxy;
+import com.github.catvod.CatvodProxy;
 import com.github.catvod.crawler.js.rsa.RSAEncrypt;
 import com.whl.quickjs.wrapper.ContextSetter;
 import com.whl.quickjs.wrapper.Function;
@@ -39,7 +39,7 @@ public class Global {
     @Keep
     @Function
     public String getProxy(boolean local) {
-        return Proxy.getUrl(local) + "?do=js";
+        return CatvodProxy.getUrl(local) + "?do=js";
     }
 
     @Keep

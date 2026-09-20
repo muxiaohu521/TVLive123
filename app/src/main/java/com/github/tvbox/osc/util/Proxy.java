@@ -296,9 +296,9 @@ public class Proxy {
         @Override
         public void close() throws IOException {
             try {
-                super.close();
-            } finally {
                 response.close();
+            } finally {
+                super.close();
             }
         }
     }

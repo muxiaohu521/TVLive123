@@ -62,8 +62,8 @@ import fi.iki.elonen.NanoHTTPD;
  */
 public class RemoteServer extends NanoHTTPD {
     private Context mContext;
-    public static int serverPort = 9978;
-    private boolean isStarted = false;
+    public static volatile int serverPort = 9978;
+    private volatile boolean isStarted = false;
     private DataReceiver mDataReceiver;
     public static String m3u8Content;
     private ArrayList<RequestProcess> getRequestList = new ArrayList<>();
@@ -428,27 +428,43 @@ public class RemoteServer extends NanoHTTPD {
     public static String getLocalIPAddress(Context context) {
         WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
-        if (ipAddress == 0) {
-            try {
-                Enumeration<NetworkInterface> enumerationNi = NetworkInterface.getNetworkInterfaces();
-                while (enumerationNi.hasMoreElements()) {
-                    NetworkInterface networkInterface = enumerationNi.nextElement();
-                    String interfaceName = networkInterface.getDisplayName();
-                    if (interfaceName.equals("eth0") || interfaceName.equals("wlan0")) {
-                        Enumeration<InetAddress> enumIpAddr = networkInterface.getInetAddresses();
-                        while (enumIpAddr.hasMoreElements()) {
-                            InetAddress inetAddress = enumIpAddr.nextElement();
-                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                                return inetAddress.getHostAddress();
-                            }
+        if (ipAddress != 0) {
+            String wifiIp = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
+            if (!"0.0.0.0".equals(wifiIp)) {
+                return wifiIp;
+            }
+        }
+        try {
+            Enumeration<NetworkInterface> enumerationNi = NetworkInterface.getNetworkInterfaces();
+            String fallbackIp = null;
+            while (enumerationNi.hasMoreElements()) {
+                NetworkInterface networkInterface = enumerationNi.nextElement();
+                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                    continue;
+                }
+                String interfaceName = networkInterface.getDisplayName();
+                if (interfaceName == null) {
+                    continue;
+                }
+                boolean isPreferred = interfaceName.startsWith("wlan") || interfaceName.startsWith("eth");
+                Enumeration<InetAddress> enumIpAddr = networkInterface.getInetAddresses();
+                while (enumIpAddr.hasMoreElements()) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        if (isPreferred) {
+                            return inetAddress.getHostAddress();
+                        }
+                        if (fallbackIp == null) {
+                            fallbackIp = inetAddress.getHostAddress();
                         }
                     }
                 }
-            } catch (SocketException e) {
-                e.printStackTrace();
             }
-        } else {
-            return String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff), (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
+            if (fallbackIp != null) {
+                return fallbackIp;
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
         }
         return "0.0.0.0";
     }
@@ -507,21 +523,23 @@ public class RemoteServer extends NanoHTTPD {
         if (!destDir.exists()) {
             destDir.mkdirs();
         }
-        ZipFile zip = new ZipFile(zipFilePath);
-        Enumeration<ZipEntry> iter = (Enumeration<ZipEntry>) zip.entries();
-        while (iter.hasMoreElements()) {
-            ZipEntry entry = iter.nextElement();
-            InputStream is = zip.getInputStream(entry);
-            String filePath = destDirectory + File.separator + entry.getName();
-            if (!entry.isDirectory()) {
-                extractFile(is, filePath);
-            } else {
-                File dir = new File(filePath);
-                if (!dir.exists())
-                    dir.mkdirs();
-                File flag = new File(dir + "/.tvbox_folder");
-                if (!flag.exists())
-                    flag.createNewFile();
+        try (ZipFile zip = new ZipFile(zipFilePath)) {
+            Enumeration<ZipEntry> iter = (Enumeration<ZipEntry>) zip.entries();
+            while (iter.hasMoreElements()) {
+                ZipEntry entry = iter.nextElement();
+                try (InputStream is = zip.getInputStream(entry)) {
+                    String filePath = destDirectory + File.separator + entry.getName();
+                    if (!entry.isDirectory()) {
+                        extractFile(is, filePath);
+                    } else {
+                        File dir = new File(filePath);
+                        if (!dir.exists())
+                            dir.mkdirs();
+                        File flag = new File(dir + "/.tvbox_folder");
+                        if (!flag.exists())
+                            flag.createNewFile();
+                    }
+                }
             }
         }
     }
@@ -530,14 +548,14 @@ public class RemoteServer extends NanoHTTPD {
         File dst = new File(destFilePath);
         if (dst.exists())
             dst.delete();
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destFilePath));
-        byte[] bytesIn = new byte[2048];
-        int len = inputStream.read(bytesIn);
-        while (len > 0) {
-            bos.write(bytesIn, 0, len);
-            len = inputStream.read(bytesIn);
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(destFilePath))) {
+            byte[] bytesIn = new byte[2048];
+            int len = inputStream.read(bytesIn);
+            while (len > 0) {
+                bos.write(bytesIn, 0, len);
+                len = inputStream.read(bytesIn);
+            }
         }
-        bos.close();
     }
 
 }

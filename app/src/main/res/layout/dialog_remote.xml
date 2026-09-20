@@ -30,5 +30,23 @@
             android:textColor="@color/color_CC000000"
             android:textSize="@dimen/ts_20"
             tools:text="手机/电脑扫描上方二维码或者直接浏览器访问地址&#10;http://192.168.1.100:9978" />
+
+        <TextView
+            android:id="@+id/tvCloseRemote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/vs_30"
+            android:background="@drawable/shape_dialog_btn_close"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:paddingTop="@dimen/vs_12"
+            android:paddingBottom="@dimen/vs_12"
+            android:paddingLeft="@dimen/vs_40"
+            android:paddingRight="@dimen/vs_40"
+            android:text="关闭远程控制"
+            android:textColor="@color/color_FFFFFF"
+            android:textSize="@dimen/ts_18" />
     </LinearLayout>
 </FrameLayout>

@@ -76,7 +76,7 @@ import java.util.regex.Pattern;
  * @description:
  */
 public class ApiConfig {
-    private static ApiConfig instance;
+    private static volatile ApiConfig instance;
     private final LinkedHashMap<String, SourceBean> sourceBeanList;
     private SourceBean mHomeSource;
     private ParseBean mDefaultParse;
