@@ -1,0 +1,143 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        applicationId 'com.github.tvbox.osc.jun'
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName '1.0.0'
+        multiDexEnabled true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/beans.xml'
+        exclude 'META-INF/services/org.xmlpull.v1.XmlPullParserFactory'
+        // XStream库内置了XmlPullParser，与Android框架冲突
+        // 打包时排除，运行时使用Android框架自带版本
+        exclude 'org/xmlpull/v1/**'
+    }
+
+    flavorDimensions "mode"
+    productFlavors {
+        java32 {
+            dimension "mode"
+            minSdkVersion 16
+            ndk {
+                abiFilters 'armeabi-v7a'
+            }
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        java32 {
+            java.srcDirs += 'src/normal/java'
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    splits {
+        abi {
+            enable false
+        }
+    }
+
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            def flavorNames = variant.productFlavors.collect { it.name }.join('-')
+            def fileName = "TVBox_${variant.buildType.name}-${flavorNames}.apk"
+            outputFileName = fileName
+        }
+        variant.getPackageApplicationProvider().configure { task ->
+            task.outputDirectory = new File("${rootProject.projectDir}/output/apk")
+        }
+    }
+
+    tasks.configureEach { task ->
+        if (task.name.contains("ListingFileRedirect")) {
+            task.enabled = false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        checkReleaseBuilds true
+        abortOnError true
+        disable 'ExpiredTargetSdkVersion'
+    }
+}
+
+dependencies {
+    api fileTree(dir: "libs", include: ["*.jar","*.aar"])
+
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.media:media:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.12.11'
+    annotationProcessor 'androidx.room:room-compiler:2.3.0'
+    implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'com.squareup.okio:okio:2.8.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
+    implementation 'com.kingja.loadsir:loadsir:1.3.8'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
+    implementation 'me.jessyan:autosize:1.2.1'
+    implementation('com.thoughtworks.xstream:xstream:1.4.15') {
+        exclude group: 'xmlpull', module: 'xmlpull'
+    }
+    compileOnly 'net.sf.kxml:kxml2:2.3.0'
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.orhanobut:hawk:2.0.1'
+
+    implementation project(":player")
+    implementation project(":quickjs")
+
+    implementation 'com.lzy.net:okgo:3.0.4'
+    implementation 'com.owen:tv-recyclerview:3.0.0'
+
+    implementation 'com.github.getActivity:XXPermissions:13.6'
+    implementation 'org.jsoup:jsoup:1.14.1'
+    implementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
+    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'com.googlecode.juniversalchardet:juniversalchardet:1.0.3'
+    implementation 'com.google.zxing:core:3.4.1'
+}
