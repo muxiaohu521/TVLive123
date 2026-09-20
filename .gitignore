@@ -98,6 +98,7 @@ lint/tmp/
 
 *.hprof
 *.md
+!README.md
 .temp/
 output-metadata.json
 .py/

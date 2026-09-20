@@ -371,7 +371,7 @@ public class LivePlayActivity extends BaseActivity {
                 mVideoView.start();
                 iv_play.setVisibility(View.INVISIBLE);
                 countDownTimer.start();
-                iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+                iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
             }
         });
 
@@ -382,12 +382,12 @@ public class LivePlayActivity extends BaseActivity {
                     mVideoView.pause();
                     countDownTimer.cancel();
                     iv_play.setVisibility(View.VISIBLE);
-                    iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.icon_play));
+                    iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.icon_play));
                 }else{
                     mVideoView.start();
                     iv_play.setVisibility(View.INVISIBLE);
                     countDownTimer.start();
-                    iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+                    iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
                 }
             }
         });
@@ -427,12 +427,12 @@ public class LivePlayActivity extends BaseActivity {
                             mVideoView.pause();
                             countDownTimer.cancel();
                             iv_play.setVisibility(View.VISIBLE);
-                            iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.icon_play));
+                            iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.icon_play));
                         }else{
                             mVideoView.start();
                             iv_play.setVisibility(View.INVISIBLE);
                             countDownTimer.start();
-                            iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+                            iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
                         }
                     }
                 }
@@ -3977,7 +3977,7 @@ public class LivePlayActivity extends BaseActivity {
                 mVideoView.start();
                 iv_play.setVisibility(View.INVISIBLE);
                 countDownTimer.start();
-                iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+                iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
             }
         });
 
@@ -3988,12 +3988,12 @@ public class LivePlayActivity extends BaseActivity {
                     mVideoView.pause();
                     countDownTimer.cancel();
                     iv_play.setVisibility(View.VISIBLE);
-                    iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.icon_play));
+                    iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.icon_play));
                 }else{
                     mVideoView.start();
                     iv_play.setVisibility(View.INVISIBLE);
                     countDownTimer.start();
-                    iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+                    iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
                 }
             }
         });
@@ -4030,12 +4030,12 @@ public class LivePlayActivity extends BaseActivity {
                             mVideoView.pause();
                             countDownTimer.cancel();
                             iv_play.setVisibility(View.VISIBLE);
-                            iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.icon_play));
+                            iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.icon_play));
                         }else{
                             mVideoView.start();
                             iv_play.setVisibility(View.INVISIBLE);
                             countDownTimer.start();
-                            iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+                            iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
                         }
                     }
                 }
@@ -4044,10 +4044,10 @@ public class LivePlayActivity extends BaseActivity {
         });
         if(mVideoView.isPlaying()){
             iv_play.setVisibility(View.INVISIBLE);
-            iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.vod_pause));
+            iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.vod_pause));
         }else{
             iv_play.setVisibility(View.VISIBLE);
-            iv_playpause.setBackground(ContextCompat.getDrawable(this, R.drawable.icon_play));
+            iv_playpause.setBackground(ContextCompat.getDrawable(LivePlayActivity.this, R.drawable.icon_play));
         }
         if(countDownTimer3==null){
             countDownTimer3 = new CountDownTimer(postTimeout, 1000) {
