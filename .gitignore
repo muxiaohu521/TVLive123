@@ -101,3 +101,7 @@ lint/tmp/
 .temp/
 output-metadata.json
 .py/
+
+# Git push temp logs
+_pushlog*.txt
+push_result.txt
