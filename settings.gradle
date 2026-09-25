@@ -1,4 +1,30 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url "https://chaquo.com/maven" }
+    }
+    plugins {
+        id 'com.android.application' version '7.4.2'
+        id 'com.android.library' version '7.4.2'
+        id 'com.chaquo.python' version '12.0.1'
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        maven { url "https://maven.aliyun.com/repository/releases" }
+    }
+}
+
 rootProject.name = "TVBox"
 include ':app'
 include ':player'
 include ':quickjs'
+include ':pyramid'

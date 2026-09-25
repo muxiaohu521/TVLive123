@@ -97,6 +97,8 @@ lint/tmp/
 .idea/
 
 *.hprof
+# Auto-downloaded tools (JDK, etc.)
+/tools/
 *.md
 !README.md
 .temp/
